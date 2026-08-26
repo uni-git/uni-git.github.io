@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crazy-ball-v1';
+const CACHE_NAME = 'crazy-ball-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -21,8 +21,24 @@ self.addEventListener('activate', e => {
   );
 });
 
+// Network-first for HTML/manifest so deploys show up immediately;
+// cache-first for static icons; always fall back to cache when offline.
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
-  );
+  const isPage = e.request.mode === 'navigate' || e.request.url.endsWith('.html') || e.request.url.endsWith('manifest.json');
+
+  if (isPage) {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, copy));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+  } else {
+    e.respondWith(
+      caches.match(e.request).then(r => r || fetch(e.request))
+    );
+  }
 });
