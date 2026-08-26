@@ -1,12 +1,12 @@
 {
   "name": "미친 공튀기기",
   "short_name": "공튀기기",
-  "description": "클래식 벽돌깨기에 미친 요소를 더한 중독성 게임",
+  "description": "공을 튀겨 스테이지를 클리어하는 레트로 게임",
   "start_url": "./index.html",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#0a0a2e",
-  "theme_color": "#0a0a2e",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "categories": ["games"],
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
