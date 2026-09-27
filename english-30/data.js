@@ -127,3 +127,43 @@ const PATTERNS = [
     ["That's exactly what I mean.", "바로 그게 내 말이야."],
     ["That's not what I mean.", "그런 뜻이 아니야."]]}
 ];
+
+// 재미로 보기 (선택) — 가사 인용 없이 곡 제목·짧은 명대사·슬랭만
+// t: song | kpop | movie | slang
+const FUN = {
+  0:  [{t:'movie', s:'Star Wars — 요다', q:'"Do or do not. There is no try."', n:'try의 가장 유명한 대사: 하든가 말든가, 시도란 없다'},
+       {t:'slang', q:"I'm tryna sleep.", n:'trying to → tryna (구어체 축약)'}],
+  1:  [{t:'slang', q:"I'm s'posed to be at work.", n:'supposed to는 빨리 말하면 "스포스터"처럼 들려요'}],
+  2:  [{t:'slang', q:'I was literally just about to text you!', n:'연락이 딱 겹쳤을 때 단골 멘트'}],
+  3:  [{t:'movie', s:'They Live (1988)', q:'"I\'m here to kick ass and chew bubblegum."', n:'액션 영화 명대사 — I\'m here to의 전설'}],
+  4:  [{t:'song', s:'Londonbeat', q:"I've Been Thinking About You", n:'곡 제목 자체가 패턴'},
+       {t:'song', s:'Johnny Cash', q:"I've Been Everywhere", n:'안 가본 데가 없어'}],
+  5:  [{t:'song', s:'DJ Snake ft. Justin Bieber', q:'Let Me Love You', n:'곡 제목 = Let me + 동사'},
+       {t:'movie', s:'겨울왕국', q:'Let It Go', n:'Let + 목적어 + 동사 응용형'}],
+  6:  [{t:'slang', q:'Can I get an amen?', n:'"다들 동의하지?" 하고 호응을 유도할 때'}],
+  7:  [{t:'song', s:'Elton John (라이온 킹)', q:'Can You Feel the Love Tonight', n:'곡 제목 = Can you + 동사'}],
+  8:  [{t:'slang', q:'Do you mind?!', n:'단독으로 쓰면 "좀 그만할래?" 하는 짜증 표현'}],
+  9:  [{t:'slang', q:'Not sure if serious or joking.', n:'유명 밈(퓨처라마 프라이) — I\'m을 빼고 쓰기도'}],
+  10: [{t:'song', s:'Charlie Puth', q:"I Don't Think That I Like Her", n:'곡 제목 = I don\'t think + 문장'}],
+  11: [{t:'slang', q:'You should totally go.', n:'totally를 넣으면 강력 추천 느낌'}],
+  12: [{t:'slang', q:'It feels like forever.', n:'"진짜 오랜만이다" 할 때 자주 써요'}],
+  13: [{t:'movie', s:'영화 단골 대사', q:"Looks like we've got company.", n:'"손님(적)이 온 것 같군" — It 생략'}],
+  14: [{t:'slang', q:'Sounds like a plan!', n:'"좋아, 그렇게 하자" — 원어민 최애 맞장구'}],
+  15: [{t:'movie', s:'오즈의 마법사', q:'"There\'s no place like home."', n:'there is 부정형의 명대사: 집만 한 곳은 없어'},
+       {t:'song', s:'The Smiths', q:'There Is a Light That Never Goes Out', n:'곡 제목 = There is + 명사'}],
+  16: [{t:'song', s:'The New Seekers', q:"I'd Like to Teach the World to Sing", n:'곡 제목 = I\'d like to + 동사'}],
+  17: [{t:'kpop', s:'BTS', q:'I NEED U', n:'I need you to의 앞부분 — 뒤에 to + 동사를 붙여보세요'}],
+  18: [{t:'song', s:'Stevie Wonder', q:'I Just Called to Say I Love You', n:'I just ~ to 구조가 같아요'}],
+  19: [{t:'song', s:'Adele — Hello', q:'첫 소절', n:'Hello 바로 다음 소절이 I was wondering if로 시작해요. 들으면서 찾아보세요!'}],
+  20: [{t:'slang', q:"Thing is, I'm broke.", n:'구어에선 The를 자주 생략'}],
+  21: [{t:'slang', q:'AFAIK', n:'채팅 약어: As Far As I Know'}],
+  22: [{t:'song', s:'Dusty Springfield', q:"You Don't Have to Say You Love Me", n:'곡 제목 = You don\'t have to + 동사'}],
+  23: [{t:'slang', q:'You might wanna sit down for this.', n:'"앉아서 들어야 할 거야" — 충격 소식 예고'}],
+  24: [{t:'slang', q:'Depends.', n:'한 단어로 "그때그때 달라"'}],
+  25: [{t:'slang', q:'LMK', n:'채팅 약어: Let Me Know (알려줘)'}],
+  26: [{t:'slang', q:"My bad, didn't mean to.", n:'가볍게 사과할 때 I를 생략'}],
+  27: [{t:'song', s:'라이온 킹', q:"I Just Can't Wait to Be King", n:'곡 제목 = I can\'t wait to + 동사'},
+       {t:'kpop', s:'TWICE', q:"I CAN'T STOP ME", n:"can't + 동사 응용"}],
+  28: [{t:'song', s:'Michael Learns to Rock', q:"That's Why (You Go Away)", n:'곡 제목 = That\'s why'}],
+  29: [{t:'song', s:'Bruno Mars', q:"That's What I Like", n:'That\'s what I + 동사 응용'}]
+};
