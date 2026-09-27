@@ -103,6 +103,12 @@ input[type=range]{flex:1;max-width:170px;accent-color:var(--accent)}
 .switch input:checked+span{background:var(--accent)}
 .switch input:checked+span::before{transform:translateX(20px)}
 select{max-width:190px;padding:7px 8px;border-radius:9px;border:1px solid var(--line);background:var(--surface2);font-size:13px}
+.fun{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--surface2);font-size:13px;line-height:1.4;display:none}
+.fun.show{display:block}
+.fun b{font-weight:700}
+.fun small{display:block;color:var(--muted);font-size:12px}
+.fun-list{margin-top:12px}
+.fun-list .fun{display:block;margin-top:6px}
 .tips{font-size:12.5px;color:var(--muted);line-height:1.6;margin:14px 2px 24px}
 .tips li{margin-left:16px}
 
@@ -202,6 +208,7 @@ nav button.on{color:var(--accent)}
       <div class="now-pattern" id="nowPattern">▶ 버튼을 눌러 시작하세요</div>
       <div class="now-en" id="nowEn">걸으면서 듣고, 입으로 말하세요.</div>
       <div class="now-ko" id="nowKo">한국어를 듣고 → 영어로 먼저 말해보고 → 정답을 듣습니다.</div>
+      <div class="fun" id="nowFun"></div>
       <div class="phase" id="phase"><span id="phaseText"></span><span class="count" id="phaseCount"></span></div>
       <div class="progress"><i id="progBar"></i></div>
     </div>
@@ -231,6 +238,7 @@ nav button.on{color:var(--accent)}
         <div class="row"><label>영어 반복 횟수</label><input type="range" id="setRepeat" min="1" max="3" step="1"><output id="outRepeat"></output></div>
         <div class="row"><label>순서 섞기</label><label class="switch"><input type="checkbox" id="setShuffle"><span></span></label></div>
         <div class="row"><label>내가 만든 문장 포함</label><label class="switch"><input type="checkbox" id="setMine"><span></span></label></div>
+        <div class="row"><label>🎵 재미 한 줄<small>팝송·명대사·슬랭 (화면에만, 시간 추가 없음)</small></label><label class="switch"><input type="checkbox" id="setFun"><span></span></label></div>
         <div class="row"><label>한국어 음성<small>끄면 화면에만 표시</small></label><label class="switch"><input type="checkbox" id="setKo"><span></span></label></div>
         <div class="row"><label>영어 목소리</label><select id="setVoice"><option value="">자동 선택</option></select></div>
       </div>
@@ -284,7 +292,7 @@ const patternsOfDay = d => Array.from({length: PER_DAY}, (_, i) => (d - 1) * PER
 
 /* ───────────── 저장 ───────────── */
 const KEY = 'english30:v1';
-const DEFAULT_SETTINGS = { mode: 'speak', rate: 0.9, think: 3, repeat: 2, shuffle: false, mine: true, ko: true, voice: '', loop: false, scope: 'd1' };
+const DEFAULT_SETTINGS = { mode: 'speak', rate: 0.9, think: 3, repeat: 2, shuffle: false, mine: true, ko: true, fun: true, voice: '', loop: false, scope: 'd1' };
 let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, settings: {} };
 try { Object.assign(store, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
 const S = Object.assign({}, DEFAULT_SETTINGS, store.settings);
@@ -552,6 +560,13 @@ const PHASES = {
   listen: ['👂 듣는 중', 'speak'],
   repeat: ['🔁 따라 말하세요', 'think']
 };
+const FUN_ICON = {song: '🎵', kpop: '💜', movie: '🎬', slang: '💬'};
+function funHtml(f) { return `${FUN_ICON[f.t]} <b>${esc(f.q)}</b>${f.s ? ' — ' + esc(f.s) : ''}<small>${esc(f.n)}</small>`; }
+function renderFunLine(step) {
+  const el = $('#nowFun'), list = step && step.p != null && typeof FUN !== 'undefined' && FUN[step.p];
+  if (!S.fun || !list) { el.classList.remove('show'); return; }
+  el.innerHTML = funHtml(list[(step.u || 0) % list.length]); el.classList.add('show');
+}
 function render(step) {
   if (!step || step.p == null) return;
   const P = PATTERNS[step.p];
@@ -560,6 +575,7 @@ function render(step) {
   const en = $('#nowEn'), ko = $('#nowKo');
   en.textContent = step.en; ko.textContent = step.mine ? '✍️ 내가 만든 문장' : step.ko;
   en.classList.toggle('hide', !step.reveal);
+  renderFunLine(step);
   const units = player.queue.length ? player.queue[player.queue.length - 1].u + 1 : 1;
   $('#nowPos').textContent = `${step.u + 1} / ${units}`;
   $('#progBar').style.width = (player.pos / Math.max(1, player.queue.length) * 100) + '%';
@@ -669,6 +685,7 @@ bindRange('setThink', 'think', v => v + '초');
 bindRange('setRepeat', 'repeat', v => v + '회');
 function bindSwitch(id, key) { const el = $('#' + id); el.checked = S[key]; el.onchange = () => { S[key] = el.checked; settingsChanged(); }; }
 bindSwitch('setShuffle', 'shuffle'); bindSwitch('setMine', 'mine'); bindSwitch('setKo', 'ko');
+$('#setFun').checked = S.fun; $('#setFun').onchange = e => { S.fun = e.target.checked; save(); renderFunLine(player.cur()); };
 $('#setVoice').onchange = e => { S.voice = e.target.value; save(); say('Let me check.', 'en', S.rate); };
 
 document.addEventListener('keydown', e => {
@@ -693,6 +710,7 @@ function renderLearn() {
         <button class="phead"><span class="num">${store.mastered[p] ? '✓' : p + 1}</span><span class="ptext"><b>${esc(P.en)}</b><span>${esc(P.ko)} · ${esc(P.use)}</span></span><span class="chev">›</span></button>
         <div class="pbody">
           ${P.ex.map(([en, ko]) => `<button class="ex" data-say="${esc(en)}"><span class="spk">${SPK}</span><span><p>${esc(en)}</p><small>${esc(ko)}</small></span></button>`).join('')}
+          ${typeof FUN !== 'undefined' && FUN[p] ? `<div class="fun-list"><div class="mine-title">🎬 재미로 보기</div>${FUN[p].map(f => `<div class="fun">${funHtml(f)}</div>`).join('')}</div>` : ''}
           <div class="mine-title">✍️ 내 문장 (${mine.length})</div>
           ${mine.map((en, i) => `<div class="ex"><button class="spk" data-say="${esc(en)}">${SPK}</button><span><p>${esc(en)}</p></span><button class="del" data-del="${i}">삭제</button></div>`).join('')}
           <form class="mine-form"><input placeholder="${esc(P.en.replace('~ing', '...ing').replace(/,.*/, ''))} ..." autocomplete="off" autocapitalize="sentences"><button>추가</button></form>
@@ -753,7 +771,7 @@ function renderQuiz() {
   c.innerHTML = `<div class="qmeta"><span class="tag">Day ${dayOf(p)}</span><span>${quiz.i + 1} / ${quiz.items.length}</span></div>
     <div class="qko">${esc(ko)}</div>
     <div class="qhint">힌트: ${esc(P.ko)}</div>
-    <div class="qans${quiz.revealed ? ' show' : ''}"><p>${esc(en)}</p><small>${esc(P.en)} — ${esc(P.use)}</small></div>
+    <div class="qans${quiz.revealed ? ' show' : ''}"><p>${esc(en)}</p><small>${esc(P.en)} — ${esc(P.use)}</small>${S.fun && typeof FUN !== 'undefined' && FUN[p] ? `<div class="fun show" style="margin-top:12px">${funHtml(FUN[p][0])}</div>` : ''}</div>
     <div class="qbtns">${quiz.revealed
       ? '<button class="miss" id="qMiss">다시 볼래</button><button class="got" id="qGot">말했어!</button>'
       : '<button class="reveal" id="qReveal">소리 내어 말한 뒤 정답 보기</button>'}</div>`;
