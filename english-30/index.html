@@ -82,7 +82,7 @@ h1 span{color:var(--accent)}
 .play svg{width:40px;height:40px}
 .cbtn:active{transform:scale(.95)}
 .sub-controls{display:flex;justify-content:center;gap:10px;margin-bottom:4px}
-.pill{padding:8px 14px;border-radius:999px;background:var(--surface2);font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center}
+.pill{white-space:nowrap;flex:none;padding:8px 14px;border-radius:999px;background:var(--surface2);font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center}
 .pill.on{background:var(--ok-soft);color:var(--ok)}
 
 details.settings{margin-top:16px}
@@ -109,6 +109,37 @@ select{max-width:190px;padding:7px 8px;border-radius:9px;border:1px solid var(--
 .fun small{display:block;color:var(--muted);font-size:12px}
 .fun-list{margin-top:12px}
 .fun-list .fun{display:block;margin-top:6px}
+.stuck{background:var(--warn-soft);color:var(--warn);font-weight:800}
+.badge{position:absolute;top:4px;left:calc(50% + 6px);min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--warn);color:#fff;font-size:10.5px;line-height:17px;display:none}
+.badge.show{display:block}
+.nsum{padding:16px;margin-top:4px}
+.nsum h3{font-size:15px;font-weight:800}
+.nsum p{font-size:13px;color:var(--muted);margin-top:2px}
+.tbar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px}
+.tbar span:first-child{width:112px;flex:none}
+.tbar i{flex:1;height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.tbar i b{display:block;height:100%;background:var(--warn)}
+.tbar em{width:22px;text-align:right;font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums}
+.ntip{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--warn-soft);font-size:13px}
+.nbtns{display:flex;gap:8px;margin-top:12px}
+.nbtns button{flex:1;padding:11px;border-radius:11px;background:var(--accent);color:#fff;font-weight:700;font-size:14px}
+.nbtns button.ghost{background:var(--surface2);color:var(--text)}
+.nadd{padding:14px;margin-top:12px;display:grid;gap:8px}
+.nadd b{font-size:13px}
+.nadd input,.nitem input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);font-size:15px}
+.nadd button{padding:10px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700}
+.nitem{padding:14px;margin-top:8px}
+.nitem.done{opacity:.55}
+.nitem .en{font-size:16px;font-weight:800}
+.nitem .ko{font-size:14px;color:var(--muted);margin-top:2px}
+.nitem .meta{font-size:11.5px;color:var(--muted);margin-top:6px}
+.ntypes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ntypes button{padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:12.5px;font-weight:600;background:var(--surface)}
+.ntypes button.on{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.nact{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+.nact button{padding:7px 11px;border-radius:9px;background:var(--surface2);font-size:13px;font-weight:600}
+.nitem .need{margin-top:8px;font-size:12px;color:var(--warn);font-weight:700}
+.nempty{text-align:center;color:var(--muted);font-size:14px;padding:30px 10px}
 .tips{font-size:12.5px;color:var(--muted);line-height:1.6;margin:14px 2px 24px}
 .tips li{margin-left:16px}
 
@@ -165,7 +196,7 @@ select{max-width:190px;padding:7px 8px;border-radius:9px;border:1px solid var(--
 
 nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 nav .wrap{display:flex}
-nav button{flex:1;padding:9px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--muted)}
+nav button{position:relative;flex:1;padding:9px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--muted)}
 nav button svg{width:24px;height:24px;fill:currentColor}
 nav button.on{color:var(--accent)}
 
@@ -219,6 +250,7 @@ nav button.on{color:var(--accent)}
       <button class="cbtn" id="btnNext" aria-label="다음 문장"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
     </div>
     <div class="sub-controls">
+      <button class="pill stuck" id="btnStuck">✋ 막혔어</button>
       <button class="pill" id="btnPocket">🔒 주머니 모드</button>
       <button class="pill" id="btnLoop">🔁 반복 재생</button>
     </div>
@@ -248,6 +280,7 @@ nav button.on{color:var(--accent)}
 
     <ul class="tips">
       <li>이어폰 버튼(재생·일시정지·다음·이전)으로 조작할 수 있어요.</li>
+      <li>말이 막히면 <b>✋ 막혔어</b> (주머니 모드에선 <b>두 번 탭</b>) — 노트 탭에서 나중에 유형을 체크하세요.</li>
       <li>재생 중에는 화면이 꺼지지 않아요. 걸을 때는 <b>주머니 모드</b>로 오작동을 막으세요.</li>
       <li>한국어가 들리면 <b>소리 내어</b> 영어로 먼저 말하고, 정답을 듣고 한 번 더 따라 하세요.</li>
     </ul>
@@ -260,6 +293,18 @@ nav button.on{color:var(--accent)}
   </section>
 
   <!-- ─────────── 퀴즈 ─────────── -->
+  <section class="view" id="view-notes">
+    <div id="notesTop"></div>
+    <div class="chips" id="noteFilter" style="margin-top:14px"></div>
+    <div id="noteList"></div>
+    <div class="card nadd">
+      <b>✍️ 직접 기록 — 말하다 막힌 표현</b>
+      <input id="nKo" placeholder="하고 싶었던 말 (한국어)" autocomplete="off">
+      <input id="nEn" placeholder="영어 표현 (알면, 나중에 적어도 돼요)" autocomplete="off" autocapitalize="sentences">
+      <button id="nAdd">기록하기</button>
+    </div>
+  </section>
+
   <section class="view" id="view-quiz">
     <div class="chips" id="quizChips"></div>
     <div class="card qcard" id="qcard"></div>
@@ -270,6 +315,7 @@ nav button.on{color:var(--accent)}
   <div class="wrap">
     <button data-view="listen" class="on"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h2v-8H5v-1a7 7 0 0 1 14 0v1h-2v8h2a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9z"/></svg>듣기</button>
     <button data-view="learn"><svg viewBox="0 0 24 24"><path d="M4 5h16v2H4zm0 6h16v2H4zm0 6h10v2H4z"/></svg>패턴</button>
+    <button data-view="notes"><svg viewBox="0 0 24 24"><path d="M5 3h11l4 4v14H5zm2 2v14h11V8h-3V5zm2 5h7v2H9zm0 4h7v2H9z"/></svg>노트<span class="badge" id="noteBadge"></span></button>
     <button data-view="quiz"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2zm2.1-7.7-.9.9A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.2-2.8l1.2-1.3A2 2 0 1 0 10 9H8a4 4 0 1 1 7.1 2.3z"/></svg>퀴즈</button>
   </div>
 </nav>
@@ -278,6 +324,7 @@ nav button.on{color:var(--accent)}
   <div class="pen" id="pocketEn"></div>
   <div class="pko" id="pocketKo"></div>
   <div class="hold"><svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="60"/></svg>길게 눌러<br>해제</div>
+  <div class="pko" style="margin-top:18px">두 번 탭 = ✋ 막혔어 기록</div>
 </div>
 <div id="toast"></div>
 
@@ -293,7 +340,7 @@ const patternsOfDay = d => Array.from({length: PER_DAY}, (_, i) => (d - 1) * PER
 /* ───────────── 저장 ───────────── */
 const KEY = 'english30:v1';
 const DEFAULT_SETTINGS = { mode: 'speak', rate: 0.9, think: 3, repeat: 2, shuffle: false, mine: true, ko: true, fun: true, voice: '', loop: false, scope: 'd1' };
-let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, settings: {} };
+let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, notes: [], settings: {} };
 try { Object.assign(store, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
 const S = Object.assign({}, DEFAULT_SETTINGS, store.settings);
 store.settings = S;
@@ -313,6 +360,7 @@ function scopePatterns(scope) {
     started.sort((a, b) => a - b).forEach(d => patternsOfDay(d).forEach(p => { if (!store.mastered[p]) list.push(p); }));
     return list;
   }
+  if (scope === 'notes') return [];
   if (scope[0] === 'd') return patternsOfDay(+scope.slice(1));
   if (scope[0] === 'p') return [+scope.slice(1)];
   return [];
@@ -320,6 +368,7 @@ function scopePatterns(scope) {
 function scopeLabel(scope) {
   if (scope === 'all') return '전체';
   if (scope === 'review') return '복습';
+  if (scope === 'notes') return '📝 노트';
   if (scope[0] === 'd') return 'Day ' + scope.slice(1);
   if (scope[0] === 'p') return '패턴 ' + (+scope.slice(1) + 1);
   return '';
@@ -334,6 +383,8 @@ function renderChips(el, current, onPick, withSingle) {
   const items = [];
   for (let d = 1; d <= DAYS; d++) items.push(['d' + d, 'Day ' + d, !!store.dayDone[d]]);
   items.push(['all', '전체 30', false], ['review', '복습', false]);
+  const nn = openNotes(true).length;
+  if (nn || current === 'notes') items.push(['notes', `📝 노트 ${nn}`, false]);
   if (withSingle && current[0] === 'p') items.unshift([current, scopeLabel(current), false]);
   el.innerHTML = items.map(([k, label, done]) =>
     `<button class="chip${k === current ? ' on' : ''}" data-k="${k}">${label}${done ? '<span class="dot"></span>' : ''}</button>`).join('');
@@ -414,6 +465,23 @@ function buildQueue(scope) {
   const q = []; let u = 0;
   const thinkMs = S.think * 1000, rate = S.rate;
   const gap = (p, meta) => q.push(Object.assign({k: 'wait', ms: 450, p, u}, meta));
+  if (scope === 'notes') {
+    let ns = openNotes(true);
+    if (S.shuffle) ns = ns.slice().sort(() => Math.random() - .5);
+    ns.forEach(n => {
+      const base = {p: n.p == null ? -1 : n.p, u, en: n.en, ko: n.ko, note: true};
+      if (n.ko) {
+        q.push(Object.assign({k: 'say', lang: 'ko', text: n.ko, reveal: false, phase: 'cue'}, base));
+        q.push(Object.assign({k: 'wait', ms: thinkMs, reveal: false, phase: 'think'}, base));
+      }
+      for (let i = 0; i < S.repeat; i++) {
+        q.push(Object.assign({k: 'say', lang: 'en', text: n.en, rate, reveal: true, phase: 'listen'}, base));
+        q.push(Object.assign({k: 'wait', ms: Math.max(1500, thinkMs * .8), reveal: true, phase: 'repeat'}, base));
+      }
+      u++;
+    });
+    return q;
+  }
   ps.forEach(p => {
     const P = PATTERNS[p];
     // 패턴 소개
@@ -569,9 +637,9 @@ function renderFunLine(step) {
 }
 function render(step) {
   if (!step || step.p == null) return;
-  const P = PATTERNS[step.p];
-  $('#nowTag').textContent = 'Day ' + dayOf(step.p);
-  $('#nowPattern').textContent = `${String(step.p + 1).padStart(2, '0')} · ${P.en}  —  ${P.use}`;
+  const P = PATTERNS[step.p] || {en: '직접 기록한 표현', use: '막힘 노트'};
+  $('#nowTag').textContent = step.p < 0 ? '📝 노트' : 'Day ' + dayOf(step.p);
+  $('#nowPattern').textContent = step.p < 0 ? `📝 ${P.en}` : `${String(step.p + 1).padStart(2, '0')} · ${P.en}  —  ${P.use}`;
   const en = $('#nowEn'), ko = $('#nowKo');
   en.textContent = step.en; ko.textContent = step.mine ? '✍️ 내가 만든 문장' : step.ko;
   en.classList.toggle('hide', !step.reveal);
@@ -603,9 +671,9 @@ const media = {
   pause() { if (this.audio) this.audio.pause(); },
   meta(step) {
     if (!('mediaSession' in navigator) || !window.MediaMetadata) return;
-    const P = PATTERNS[step.p];
+    const P = PATTERNS[step.p] || {en: '막힘 노트', ko: '직접 기록'};
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: `${step.p + 1}. ${P.en}`, artist: '영어 30 패턴', album: `Day ${dayOf(step.p)} · ${P.ko}`,
+      title: step.p < 0 ? step.en : `${step.p + 1}. ${P.en}`, artist: '영어 30 패턴', album: step.p < 0 ? '📝 노트' : `Day ${dayOf(step.p)} · ${P.ko}`,
       artwork: [{src: 'icon-192.png', sizes: '192x192', type: 'image/png'}, {src: 'icon-512.png', sizes: '512x512', type: 'image/png'}]
     });
   }
@@ -641,9 +709,16 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 (function pocketMode() {
   const el = $('#pocket'); let t = null;
   $('#btnPocket').onclick = () => { el.classList.add('show'); if (!player.playing) player.play(); };
-  const start = e => { e.preventDefault(); el.classList.add('holding'); t = setTimeout(() => { el.classList.remove('show', 'holding'); }, 1000); };
+  let downAt = 0, lastTap = 0;
+  const start = e => { e.preventDefault(); downAt = Date.now(); el.classList.add('holding'); t = setTimeout(() => { el.classList.remove('show', 'holding'); }, 1000); };
   const cancel = () => { clearTimeout(t); el.classList.remove('holding'); };
-  el.addEventListener('pointerdown', start); el.addEventListener('pointerup', cancel);
+  const up = () => {
+    cancel();
+    if (Date.now() - downAt > 300) return;
+    const now = Date.now();
+    if (now - lastTap < 450) { lastTap = 0; stuckNow(); } else lastTap = now;
+  };
+  el.addEventListener('pointerdown', start); el.addEventListener('pointerup', up);
   el.addEventListener('pointerleave', cancel); el.addEventListener('pointercancel', cancel);
   el.addEventListener('contextmenu', e => e.preventDefault());
 })();
@@ -751,14 +826,14 @@ $('#learnList').addEventListener('submit', e => {
 const quiz = { scope: 'd1', items: [], i: 0, revealed: false, miss: [], got: 0 };
 function startQuiz(scope, items) {
   quiz.scope = scope;
-  quiz.items = items || scopePatterns(scope).flatMap(p => PATTERNS[p].ex.map((_, e) => [p, e])).sort(() => Math.random() - .5);
+  quiz.items = items || (scope === 'notes' ? openNotes(true).filter(n => n.ko).map(n => ({id: n.id})).sort(() => Math.random() - .5) : scopePatterns(scope).flatMap(p => PATTERNS[p].ex.map((_, e) => [p, e])).sort(() => Math.random() - .5));
   quiz.i = 0; quiz.revealed = false; quiz.miss = []; quiz.got = 0;
   renderChips($('#quizChips'), scope, s => startQuiz(s), false);
   renderQuiz();
 }
 function renderQuiz() {
   const c = $('#qcard');
-  if (!quiz.items.length) { c.innerHTML = `<div class="qdone"><p>이 범위에는 문제가 없어요.<br>Day 과정을 먼저 들어보세요.</p></div>`; return; }
+  if (!quiz.items.length) { c.innerHTML = `<div class="qdone"><p>이 범위에는 문제가 없어요.<br>${quiz.scope === 'notes' ? '한국어 뜻이 있는 노트가 필요해요.' : 'Day 과정을 먼저 들어보세요.'}</p></div>`; return; }
   if (quiz.i >= quiz.items.length) {
     const total = quiz.items.length;
     c.innerHTML = `<div class="qdone"><b>${quiz.got}/${total}</b><p>${quiz.miss.length ? '틀린 문장만 다시 해볼까요?' : '완벽해요! 이 범위는 자동화에 가까워요.'}</p>
@@ -767,8 +842,12 @@ function renderQuiz() {
     $('#qAgain').onclick = () => startQuiz(quiz.scope);
     return;
   }
-  const [p, e] = quiz.items[quiz.i], P = PATTERNS[p], [en, ko] = P.ex[e];
-  c.innerHTML = `<div class="qmeta"><span class="tag">Day ${dayOf(p)}</span><span>${quiz.i + 1} / ${quiz.items.length}</span></div>
+  const cur = quiz.items[quiz.i], nt = cur.id ? store.notes.find(n => n.id === cur.id) : null;
+  if (cur.id && !nt) { quiz.i++; return renderQuiz(); }
+  const p = nt ? (nt.p == null ? -1 : nt.p) : cur[0];
+  const P = PATTERNS[p] || {en: '직접 기록한 표현', ko: '막힘 노트', use: '노트'};
+  const [en, ko] = nt ? [nt.en, nt.ko] : P.ex[cur[1]];
+  c.innerHTML = `<div class="qmeta"><span class="tag">${p < 0 ? '📝 노트' : 'Day ' + dayOf(p)}</span><span>${quiz.i + 1} / ${quiz.items.length}</span></div>
     <div class="qko">${esc(ko)}</div>
     <div class="qhint">힌트: ${esc(P.ko)}</div>
     <div class="qans${quiz.revealed ? ' show' : ''}"><p>${esc(en)}</p><small>${esc(P.en)} — ${esc(P.use)}</small>${S.fun && typeof FUN !== 'undefined' && FUN[p] ? `<div class="fun show" style="margin-top:12px">${funHtml(FUN[p][0])}</div>` : ''}</div>
@@ -783,17 +862,108 @@ function renderQuiz() {
   }
 }
 function answer(ok) {
-  const it = quiz.items[quiz.i], p = it[0];
-  const st = store.quiz[p] = store.quiz[p] || {ok: 0, miss: 0};
-  ok ? (st.ok++, quiz.got++) : (st.miss++, quiz.miss.push(it));
+  const it = quiz.items[quiz.i];
+  if (it.id) { ok ? quiz.got++ : quiz.miss.push(it); }
+  else {
+    const p = it[0], st = store.quiz[p] = store.quiz[p] || {ok: 0, miss: 0};
+    ok ? (st.ok++, quiz.got++) : (st.miss++, quiz.miss.push(it));
+    if (!ok) { const [en, ko] = PATTERNS[p].ex[it[1]]; addNote({en, ko, p, src: 'quiz'}, true); }
+  }
   save(); quiz.i++; quiz.revealed = false; renderQuiz();
 }
+
+/* ───────────── 막힘 노트 ───────────── */
+const NOTE_TYPES = [
+  ['recall', '🧠 안 떠오름', '패턴 자체가 생각나지 않았어요', '이 패턴만 듣기로 5번 돌리고, 섀도잉 모드로 입에 붙이세요.'],
+  ['vocab',  '🔤 단어 몰라', '모르는 단어가 있었어요', '모르는 단어만 3번 소리 내 말하고, 그 단어로 내 문장을 하나 만들어 보세요.'],
+  ['order',  '🧩 어순·문법', '문장 조립이 헷갈렸어요', '패턴 뒤에 오는 모양(to+동사 / ~ing / 문장)을 확인하고 천천히 조립해 보세요.'],
+  ['speed',  '👄 입이 느림', '알지만 말이 안 나왔어요', '속도 0.8x 섀도잉으로 3번, 익숙해지면 1.0x로 올리세요.'],
+  ['ear',    '👂 안 들림', '소리가 잘 안 들렸어요', '듣기(영→한) 모드로 반복하고, 이어지는 소리를 그대로 따라 해보세요.']
+];
+store.notes = store.notes || [];
+let noteFilter = 'all';
+function openNotes(playable) { return store.notes.filter(n => !n.done && (!playable || n.en)); }
+function addNote(n, quiet) {
+  const key = (n.en || n.ko).trim().toLowerCase();
+  let ex = store.notes.find(x => (x.en || x.ko).trim().toLowerCase() === key);
+  if (ex) { ex.count++; ex.ts = Date.now(); ex.done = false; if (!ex.ko && n.ko) ex.ko = n.ko; }
+  else { ex = Object.assign({id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), types: [], count: 1, ts: Date.now(), done: false}, n); store.notes.unshift(ex); }
+  save(); updateNoteBadge(); player.dirty = player.dirty || S.scope === 'notes';
+  if (!quiet) toast(ex.count > 1 ? `✋ 또 막혔네요 (${ex.count}번째) — 노트에 기록` : '✋ 기록했어요 — 노트 탭에서 유형 체크');
+  return ex;
+}
+function stuckNow() {
+  const st = player.cur();
+  if (!st || st.en == null) return toast('재생 중인 문장이 없어요');
+  if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+  const P = PATTERNS[st.p];
+  if (st.intro) addNote({en: P.en, ko: P.ko, p: st.p, src: 'listen'});
+  else addNote({en: st.en, ko: st.ko, p: st.p < 0 ? null : st.p, src: st.note ? 'note' : 'listen'});
+}
+$('#btnStuck').onclick = stuckNow;
+function updateNoteBadge() {
+  const n = store.notes.filter(x => !x.done && !x.types.length).length, b = $('#noteBadge');
+  b.textContent = n; b.classList.toggle('show', n > 0);
+}
+function renderNotes() {
+  const open = store.notes.filter(n => !n.done);
+  const cnt = {}; NOTE_TYPES.forEach(([k]) => cnt[k] = 0);
+  open.forEach(n => n.types.forEach(t => cnt[t]++));
+  const max = Math.max(1, ...Object.values(cnt)), untyped = open.filter(n => !n.types.length).length;
+  const top = NOTE_TYPES.slice().sort((a, b) => cnt[b[0]] - cnt[a[0]])[0];
+  $('#notesTop').innerHTML = `<div class="card nsum">
+    <h3>막힘 노트 ${open.length}개</h3>
+    <p>${untyped ? `아직 유형 체크 안 한 게 ${untyped}개 있어요. 무엇이 어려웠는지 눌러주세요.` : open.length ? '모두 분류 완료!' : '걸으면서 막히면 ✋ 한 번만 누르세요.'}</p>
+    ${NOTE_TYPES.map(([k, label]) => `<div class="tbar"><span>${label}</span><i><b style="width:${cnt[k] / max * 100}%"></b></i><em>${cnt[k]}</em></div>`).join('')}
+    ${cnt[top[0]] ? `<div class="ntip">가장 많은 약점: <b>${top[1]}</b><br>${top[3]}</div>` : ''}
+    <div class="nbtns"><button id="nPlay">▶ 노트만 듣기</button><button class="ghost" id="nQuiz">❓ 노트 퀴즈</button></div>
+  </div>`;
+  $('#nPlay').onclick = () => { if (!openNotes(true).length) return toast('영어가 적힌 노트가 없어요'); showView('listen'); setScope('notes'); player.play(); };
+  $('#nQuiz').onclick = () => { showView('quiz'); startQuiz('notes'); };
+
+  const filters = [['all', '전체'], ['untyped', '미분류'], ...NOTE_TYPES.map(([k, l]) => [k, l]), ['done', '✓ 해결']];
+  $('#noteFilter').innerHTML = filters.map(([k, l]) => `<button class="chip${k === noteFilter ? ' on' : ''}" data-k="${k}">${l}</button>`).join('');
+  $('#noteFilter').querySelectorAll('.chip').forEach(b => b.onclick = () => { noteFilter = b.dataset.k; renderNotes(); });
+
+  const list = store.notes.filter(n => noteFilter === 'done' ? n.done : !n.done && (noteFilter === 'all' || (noteFilter === 'untyped' ? !n.types.length : n.types.includes(noteFilter))));
+  const src = {listen: '듣기', quiz: '퀴즈', manual: '직접', note: '노트'};
+  $('#noteList').innerHTML = list.length ? list.map(n => `<div class="card nitem${n.done ? ' done' : ''}" data-id="${n.id}">
+    <div class="en">${n.en ? esc(n.en) : '<span style="color:var(--muted)">영어 표현 미입력</span>'}</div>
+    ${n.ko ? `<div class="ko">${esc(n.ko)}</div>` : ''}
+    ${n.en ? '' : '<div style="display:flex;gap:6px;margin-top:8px"><input data-en placeholder="영어로 적어두기" autocapitalize="sentences"><button class="pill" data-act="saveen">저장</button></div>'}
+    <div class="meta">${n.p != null && PATTERNS[n.p] ? `패턴 ${n.p + 1} · ${esc(PATTERNS[n.p].en)} · ` : ''}${src[n.src] || ''} · ${n.count}번 막힘 · ${new Date(n.ts).toLocaleDateString('ko-KR', {month: 'numeric', day: 'numeric'})}</div>
+    ${!n.types.length && !n.done ? '<div class="need">무엇이 어려웠나요? ↓</div>' : ''}
+    <div class="ntypes">${NOTE_TYPES.map(([k, l]) => `<button data-type="${k}" class="${n.types.includes(k) ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div class="nact">${n.en ? '<button data-act="say">🔊</button>' : ''}<button data-act="done">${n.done ? '↩ 다시' : '✓ 해결'}</button><button data-act="del">삭제</button></div>
+  </div>`).join('') : `<div class="nempty">${noteFilter === 'all' ? '아직 기록이 없어요.<br>듣기 중 ✋ 막혔어, 퀴즈에서 "다시 볼래"를 누르면 여기 쌓여요.' : '해당하는 노트가 없어요.'}</div>`;
+}
+$('#noteList').addEventListener('click', e => {
+  const card = e.target.closest('.nitem'); if (!card) return;
+  const n = store.notes.find(x => x.id === card.dataset.id); if (!n) return;
+  const tb = e.target.closest('[data-type]'), act = e.target.closest('[data-act]');
+  if (tb) { const t = tb.dataset.type; n.types = n.types.includes(t) ? n.types.filter(x => x !== t) : n.types.concat(t); }
+  else if (act) {
+    const a = act.dataset.act;
+    if (a === 'say') return speakNow(n.en, 'en');
+    if (a === 'done') { n.done = !n.done; if (n.done) toast('✓ 해결! 잘했어요'); }
+    if (a === 'del') { if (!confirm('이 노트를 삭제할까요?')) return; store.notes = store.notes.filter(x => x !== n); }
+    if (a === 'saveen') { const v = card.querySelector('[data-en]').value.trim(); if (!v) return; n.en = /[.?!]$/.test(v) ? v : v + '.'; }
+  } else return;
+  save(); updateNoteBadge(); player.dirty = true; renderNotes();
+});
+$('#nAdd').onclick = () => {
+  const ko = $('#nKo').value.trim(), en = $('#nEn').value.trim();
+  if (!ko && !en) return toast('한국어나 영어 중 하나는 적어주세요');
+  addNote({ko, en: en && !/[.?!]$/.test(en) ? en + '.' : en, p: null, src: 'manual'}, true);
+  $('#nKo').value = ''; $('#nEn').value = ''; noteFilter = 'all'; renderNotes(); toast('기록했어요 — 유형도 체크해 보세요');
+};
 
 /* ───────────── 탭 ───────────── */
 function showView(v) {
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('active', x.id === 'view-' + v));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
   if (v === 'learn') renderLearn();
+  if (v === 'notes') renderNotes();
   if (v === 'quiz' && !quiz.items.length) startQuiz(S.scope[0] === 'p' ? 'd' + dayOf(+S.scope.slice(1)) : S.scope);
   window.scrollTo(0, 0);
 }
@@ -813,6 +983,7 @@ if ('serviceWorker' in navigator) window.addEventListener('load', () => navigato
 /* ───────────── 시작 ───────────── */
 if ((S.scope[0] === 'd' && store.dayDone[S.scope.slice(1)] && nextDay())) S.scope = 'd' + (nextDay() || 1);
 renderMeter();
+updateNoteBadge();
 setScope(S.scope);
 if (!synth) toast('이 브라우저는 음성 재생을 지원하지 않아요');
 </script>
