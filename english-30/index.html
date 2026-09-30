@@ -210,6 +210,33 @@ nav button.on{color:var(--accent)}
 #pocket .hold circle{fill:none;stroke:#8d8dff;stroke-width:3;stroke-dasharray:377;stroke-dashoffset:377}
 #pocket.holding .hold circle{transition:stroke-dashoffset 1s linear;stroke-dashoffset:0}
 
+.hright{display:flex;align-items:center;gap:10px}
+.hbtn{position:relative;width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--line);font-size:17px;display:grid;place-items:center;flex:none}
+.hbtn .dot{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:var(--warn);border:2px solid var(--bg);display:none}
+.hbtn.remind .dot{display:block}
+#saveWarn{display:none;margin:0 0 8px;padding:10px 12px;border-radius:12px;background:#b3261e;color:#fff;font-size:13px;font-weight:600}
+#saveWarn.show{display:block}
+.sheet{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center}
+.sheet.show{display:flex}
+.sheet-body{width:100%;max-width:560px;max-height:88dvh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:800}
+.sheet-head button{width:34px;height:34px;border-radius:50%;background:var(--surface2);font-size:15px}
+.dstat{margin-top:12px;padding:12px;border-radius:12px;background:var(--ok-soft);font-size:13.5px;line-height:1.55}
+.dstat.bad{background:#b3261e;color:#fff}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.dgrid div{padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:12px;color:var(--muted)}
+.dgrid b{display:block;font-size:19px;color:var(--text)}
+.dbk{margin-top:12px;font-size:13px}
+.dbk.warn{color:var(--warn);font-weight:700}
+.dbtns{display:flex;gap:8px;margin-top:12px}
+.dbtns button{flex:1;padding:13px 8px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;font-size:14px}
+.dbtns button.ghost{background:var(--surface2);color:var(--text)}
+.dmore{margin-top:12px;font-size:13px}
+.dmore summary{cursor:pointer;color:var(--muted);font-weight:600}
+.dmore textarea{width:100%;height:84px;margin-top:8px;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12px}
+.dmore .pill{margin-top:8px}
+.dnote{margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.dnote li{margin-left:16px}
 #toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#222433;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:90%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #installBanner{display:none;margin-top:12px;padding:12px 14px;align-items:center;gap:10px;font-size:13px}
@@ -224,8 +251,12 @@ nav button.on{color:var(--accent)}
 <header>
   <div class="wrap">
     <h1>영어 <span>30</span> 패턴</h1>
-    <div class="meter"><span id="meterText">자동화 0/30</span><div class="meter-bar"><i id="meterBar"></i></div></div>
+    <div class="hright">
+      <div class="meter"><span id="meterText">자동화 0/30</span><div class="meter-bar"><i id="meterBar"></i></div></div>
+      <button class="hbtn" id="btnData" aria-label="내 데이터">💾<span class="dot"></span></button>
+    </div>
   </div>
+  <div class="wrap"><div id="saveWarn">⚠️ 이 창에서는 기록이 저장되지 않아요 (사생활 보호 모드·미리보기 등). 일반 창이나 홈 화면 앱에서 열어주세요.</div></div>
 </header>
 
 <main class="wrap">
@@ -326,6 +357,26 @@ nav button.on{color:var(--accent)}
   <div class="hold"><svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="60"/></svg>길게 눌러<br>해제</div>
   <div class="pko" style="margin-top:18px">두 번 탭 = ✋ 막혔어 기록</div>
 </div>
+<div class="sheet" id="dataSheet">
+  <div class="card sheet-body">
+    <div class="sheet-head"><span>💾 내 데이터</span><button id="dataClose" aria-label="닫기">✕</button></div>
+    <div id="dataInfo"></div>
+    <div class="dbtns"><button id="dExport">📤 백업 파일 저장</button><button class="ghost" id="dImport">📥 백업 불러오기</button></div>
+    <input type="file" id="dFile" accept=".json,application/json,text/plain" hidden>
+    <details class="dmore">
+      <summary>파일이 어려우면: 텍스트로 옮기기</summary>
+      <button class="pill" id="dCopy">📋 백업 텍스트 복사</button>
+      <textarea id="dPaste" placeholder="복사해 둔 백업 텍스트를 여기에 붙여넣기"></textarea>
+      <button class="pill" id="dPasteGo">붙여넣은 내용으로 불러오기</button>
+    </details>
+    <ul class="dnote">
+      <li>기록은 누를 때마다 이 기기에 <b>자동 저장</b>돼요.</li>
+      <li>아이폰은 <b>홈 화면 앱과 브라우저(사파리·크롬)의 저장 공간이 따로</b>예요. 한쪽에서 백업 파일 저장 → 다른 쪽에서 불러오기로 옮기세요.</li>
+      <li>불러오기는 지금 기록에 <b>합쳐져요</b> (지워지지 않아요). 폰을 바꿀 때도 같은 방법으로 옮기면 돼요.</li>
+      <li>브라우저에서 오래 안 쓰면 기록이 지워질 수 있어요. 홈 화면 앱으로 쓰고, 가끔 백업해 두면 안전해요.</li>
+    </ul>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script src="data.js"></script>
@@ -339,12 +390,22 @@ const patternsOfDay = d => Array.from({length: PER_DAY}, (_, i) => (d - 1) * PER
 
 /* ───────────── 저장 ───────────── */
 const KEY = 'english30:v1';
-const DEFAULT_SETTINGS = { mode: 'speak', rate: 0.9, think: 3, repeat: 2, shuffle: false, mine: true, ko: true, fun: true, voice: '', loop: false, scope: 'd1' };
-let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, notes: [], settings: {} };
-try { Object.assign(store, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+const DEFAULT_SETTINGS = { mode: 'speak', rate: 0.9, think: 3, repeat: 2, shuffle: false, mine: true, ko: true, fun: true, voice: '', loop: false, scope: 'd1', resume: null };
+let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, notes: [], settings: {}, savedAt: 0, backupAt: 0 };
+let storageOK = true;
+try {
+  Object.assign(store, JSON.parse(localStorage.getItem(KEY)) || {});
+  localStorage.setItem('english30:probe', '1'); localStorage.removeItem('english30:probe');
+} catch (e) { storageOK = false; }
 const S = Object.assign({}, DEFAULT_SETTINGS, store.settings);
 store.settings = S;
-function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+function save() {
+  store.savedAt = Date.now();
+  try { localStorage.setItem(KEY, JSON.stringify(store)); storageOK = true; }
+  catch (e) { storageOK = false; }
+  const w = document.getElementById('saveWarn'); if (w) w.classList.toggle('show', !storageOK);
+  try { updateDataDot(); } catch (e) {}
+}
 
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
@@ -578,7 +639,7 @@ const player = {
     const step = this.queue[this.pos];
     if (!step) return this.finished();
     const prev = this.queue[this.pos - 1];
-    if (!prev || prev.u !== step.u) { this.unitStart = Date.now(); media.meta(step); }
+    if (!prev || prev.u !== step.u) { this.unitStart = Date.now(); media.meta(step); S.resume = {scope: S.scope, p: step.p, en: step.en}; save(); }
     render(step);
     if (step.k === 'say') {
       if (step.lang === 'ko' && (!S.ko || !pickVoice('ko'))) {
@@ -611,7 +672,7 @@ const player = {
       renderChips($('#scopeChips'), S.scope, setScope, true); renderPlan();
     }
     if (S.loop) { this.dirty = true; this.ensureQueue(); this.run(); return; }
-    this.playing = false; this.pos = 0;
+    this.playing = false; this.pos = 0; S.resume = null; save();
     media.pause(); wake.off();
     setPhase('✓ 한 바퀴 완료', '');
     updatePlayUI();
@@ -969,6 +1030,122 @@ function showView(v) {
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
+/* ───────────── 내 데이터: 저장 상태 · 백업 · 불러오기 ───────────── */
+const isApp = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+let persisted = null;
+async function askPersist() {
+  try {
+    if (!navigator.storage || !navigator.storage.persist) return;
+    persisted = await navigator.storage.persisted();
+    if (!persisted) persisted = await navigator.storage.persist();
+  } catch (e) {}
+}
+const hasData = () => store.notes.length || Object.values(store.mastered).some(Boolean) || Object.keys(store.dayDone).length || Object.values(store.mine).some(a => a.length);
+const needBackup = () => hasData() && Date.now() - (store.backupAt || 0) > 7 * 864e5;
+function ago(t) {
+  if (!t) return '없음';
+  const m = Math.round((Date.now() - t) / 6e4);
+  if (m < 1) return '방금'; if (m < 60) return m + '분 전';
+  const h = Math.round(m / 60); if (h < 24) return h + '시간 전';
+  return Math.round(h / 24) + '일 전';
+}
+function updateDataDot() { $('#btnData').classList.toggle('remind', !!needBackup()); }
+function renderDataSheet() {
+  const mine = Object.values(store.mine).reduce((a, b) => a + b.length, 0);
+  const cells = [
+    ['자동화 패턴', Object.values(store.mastered).filter(Boolean).length + '/30'],
+    ['완료한 Day', Object.keys(store.dayDone).length + '/6'],
+    ['막힘 노트', store.notes.length + '개'],
+    ['내 문장', mine + '개']
+  ];
+  $('#dataInfo').innerHTML = (storageOK
+    ? `<div class="dstat">✅ 이 기기에 자동 저장 중 · 마지막 저장 <b>${ago(store.savedAt)}</b><br>
+       📍 ${isApp() ? '홈 화면 앱' : '브라우저'}에 저장됨${persisted === true ? ' · 🔒 영구 보관 허용됨' : persisted === false ? ' · 오래 안 쓰면 브라우저가 지울 수 있어요' : ''}</div>`
+    : `<div class="dstat bad">⚠️ 지금 창에서는 저장이 안 돼요. 사생활 보호(시크릿) 모드나 미리보기 창이면 일반 창·홈 화면 앱에서 열어주세요.</div>`)
+    + `<div class="dgrid">${cells.map(([k, v]) => `<div>${k}<b>${v}</b></div>`).join('')}</div>`
+    + `<div class="dbk${needBackup() ? ' warn' : ''}">마지막 백업: ${ago(store.backupAt)}${needBackup() ? ' — 백업해 두는 걸 추천해요' : ''}</div>`;
+}
+function openDataSheet() { renderDataSheet(); $('#dataSheet').classList.add('show'); askPersist().then(() => $('#dataSheet').classList.contains('show') && renderDataSheet()); }
+$('#btnData').onclick = openDataSheet;
+$('#dataClose').onclick = () => $('#dataSheet').classList.remove('show');
+$('#dataSheet').addEventListener('click', e => { if (e.target.id === 'dataSheet') e.target.classList.remove('show'); });
+
+function backupText() {
+  const data = Object.assign({}, store, {settings: Object.assign({}, S, {resume: null})});
+  return JSON.stringify({app: 'english30', v: 1, exportedAt: Date.now(), data});
+}
+function markBackup() { store.backupAt = Date.now(); save(); updateDataDot(); renderDataSheet(); }
+$('#dExport').onclick = async () => {
+  const name = `english30-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  const blob = new Blob([backupText()], {type: 'application/json'});
+  try {
+    // 공유 시트는 .txt(text/plain)만 받는 브라우저가 많아서 공유용은 텍스트 파일로
+    const file = new File([blob], name.replace(/\.json$/, '.txt'), {type: 'text/plain'});
+    if (navigator.canShare && navigator.canShare({files: [file]})) {
+      await navigator.share({files: [file], title: '영어30 백업'});
+      markBackup(); toast('백업 완료! 파일 앱·카톡 나와의 채팅 등에 보관하세요'); return;
+    }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  markBackup(); toast('백업 파일을 저장했어요 (다운로드 폴더)');
+};
+$('#dCopy').onclick = async () => {
+  const t = backupText();
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) { const ta = $('#dPaste'); ta.value = t; ta.select(); document.execCommand('copy'); ta.value = ''; }
+  markBackup(); toast('백업 텍스트를 복사했어요 — 메모나 카톡에 붙여넣어 두세요');
+};
+$('#dImport').onclick = () => $('#dFile').click();
+$('#dFile').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (f) importBackup(await f.text());
+};
+$('#dPasteGo').onclick = () => { const t = $('#dPaste').value.trim(); if (t) { importBackup(t); $('#dPaste').value = ''; } };
+
+function noteKey(n) { return (n.en || n.ko || '').trim().toLowerCase(); }
+function mergeStore(d) {
+  const add = {notes: 0, mastered: 0, mine: 0, days: 0};
+  Object.entries(d.mastered || {}).forEach(([p, v]) => { if (v && !store.mastered[p]) { store.mastered[p] = true; add.mastered++; } });
+  Object.entries(d.mine || {}).forEach(([p, list]) => {
+    const cur = store.mine[p] = store.mine[p] || [];
+    (list || []).forEach(x => { if (!cur.includes(x)) { cur.push(x); add.mine++; } });
+  });
+  Object.entries(d.dayDone || {}).forEach(([k, t]) => { if (!store.dayDone[k]) add.days++; store.dayDone[k] = Math.max(store.dayDone[k] || 0, t); });
+  Object.entries(d.quiz || {}).forEach(([p, q]) => {
+    const cur = store.quiz[p] = store.quiz[p] || {ok: 0, miss: 0};
+    cur.ok = Math.max(cur.ok, q.ok || 0); cur.miss = Math.max(cur.miss, q.miss || 0);
+  });
+  (d.notes || []).forEach(n => {
+    if (!noteKey(n)) return;
+    const ex = store.notes.find(x => noteKey(x) === noteKey(n));
+    if (!ex) { store.notes.push(Object.assign({types: [], count: 1, done: false, ts: Date.now()}, n)); add.notes++; return; }
+    ex.count = Math.max(ex.count, n.count || 1);
+    ex.types = [...new Set(ex.types.concat(n.types || []))];
+    if (!ex.en && n.en) ex.en = n.en; if (!ex.ko && n.ko) ex.ko = n.ko;
+    if (n.ts > ex.ts) { ex.ts = n.ts; ex.done = !!n.done; }
+  });
+  store.notes.sort((a, b) => b.ts - a.ts);
+  return add;
+}
+function importBackup(text) {
+  let obj;
+  try { obj = JSON.parse(text); } catch (e) { return toast('백업 내용을 읽을 수 없어요'); }
+  const d = obj && obj.app === 'english30' ? obj.data : obj;
+  if (!d || typeof d !== 'object' || !('mastered' in d || 'notes' in d || 'dayDone' in d)) return toast('영어30 백업이 아니에요');
+  const add = mergeStore(d);
+  save(); player.dirty = true;
+  renderMeter(); updateNoteBadge(); updateDataDot(); renderPlan();
+  renderChips($('#scopeChips'), S.scope, setScope, true);
+  if ($('#view-learn').classList.contains('active')) renderLearn();
+  if ($('#view-notes').classList.contains('active')) renderNotes();
+  renderDataSheet();
+  const parts = [add.notes && `노트 ${add.notes}`, add.mastered && `자동화 ${add.mastered}`, add.mine && `내 문장 ${add.mine}`, add.days && `Day ${add.days}`].filter(Boolean);
+  toast(parts.length ? `불러오기 완료: ${parts.join(', ')} 추가` : '불러오기 완료 (새로 추가된 기록은 없어요)');
+}
+
 /* ───────────── 설치 & 서비스워커 ───────────── */
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
@@ -984,7 +1161,16 @@ if ('serviceWorker' in navigator) window.addEventListener('load', () => navigato
 if ((S.scope[0] === 'd' && store.dayDone[S.scope.slice(1)] && nextDay())) S.scope = 'd' + (nextDay() || 1);
 renderMeter();
 updateNoteBadge();
+updateDataDot();
+$('#saveWarn').classList.toggle('show', !storageOK);
+if (isApp()) askPersist();
+const resumeAt = S.resume;
 setScope(S.scope);
+if (resumeAt && resumeAt.scope === S.scope && player.queue.length) {
+  const i = player.queue.findIndex(st => st.en === resumeAt.en && !st.intro);
+  const j = i >= 0 ? i : player.queue.findIndex(st => st.p === resumeAt.p);
+  if (j > 0) { player.pos = player.unitFirst(player.queue[j].u); render(player.cur()); $('#nowPos').textContent += ' · 이어서'; }
+}
 if (!synth) toast('이 브라우저는 음성 재생을 지원하지 않아요');
 </script>
 </body>
