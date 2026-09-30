@@ -1,8 +1,10 @@
-const CACHE_NAME = 'english30-v4';
+const CACHE_NAME = 'english30-v5';
 const ASSETS = [
   './',
   './index.html',
   './data.js',
+  './sync.js',
+  './sync-config.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
@@ -26,6 +28,8 @@ self.addEventListener('activate', e => {
 // cache-first for icons; always fall back to cache when offline.
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // 서버(Firestore) 요청 등 다른 도메인은 건드리지 않음
+  if (new URL(e.request.url).origin !== self.location.origin) return;
   const url = e.request.url;
   const isCode = e.request.mode === 'navigate' || /\.(html|js|json)(\?|$)/.test(url);
 
