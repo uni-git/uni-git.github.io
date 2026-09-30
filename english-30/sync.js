@@ -26,7 +26,7 @@
   // 올릴 데이터: 기기 전용 값(목소리, 재생 위치, 동기화 상태)은 제외
   function payload() {
     const settings = Object.assign({}, S); DEVICE_ONLY.forEach(k => delete settings[k]);
-    const d = {mastered: store.mastered, mine: store.mine, dayDone: store.dayDone, quiz: store.quiz, notes: store.notes, backupAt: store.backupAt, settings};
+    const d = {mastered: store.mastered, mine: store.mine, dayDone: store.dayDone, quiz: store.quiz, notes: store.notes, chats: store.chats, backupAt: store.backupAt, settings};
     return JSON.stringify(d);
   }
   async function fetchRemote(code) {
@@ -44,7 +44,7 @@
 
   function persistQuiet() { applying = true; try { save(); } finally { applying = false; } }
   function replaceWith(d) {
-    ['mastered', 'mine', 'dayDone', 'quiz'].forEach(k => { store[k] = d[k] || {}; });
+    ['mastered', 'mine', 'dayDone', 'quiz', 'chats'].forEach(k => { store[k] = d[k] || {}; });
     store.notes = Array.isArray(d.notes) ? d.notes : [];
     if (d.backupAt) store.backupAt = Math.max(store.backupAt || 0, d.backupAt);
     if (d.settings) Object.keys(d.settings).forEach(k => { if (!DEVICE_ONLY.includes(k) && k in S) S[k] = d.settings[k]; });

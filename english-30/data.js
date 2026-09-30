@@ -167,3 +167,54 @@ const FUN = {
   28: [{t:'song', s:'Michael Learns to Rock', q:"That's Why (You Go Away)", n:'곡 제목 = That\'s why'}],
   29: [{t:'song', s:'Bruno Mars', q:"That's What I Like", n:'That\'s what I + 동사 응용'}]
 };
+
+// 대화 연습 — 상대 대사(b)는 고정, 내 차례(you)는 배운 패턴(p)으로 말하기
+// you: [하고 싶은 말(한국어), 패턴 번호, 모범 답안]
+const DIALOGS = [
+  {id: 'cafe', emoji: '☕', title: '카페에서 주문하기', turns: [
+    {b: ['Hi! What can I get for you today?', '안녕하세요! 뭘 드릴까요?'], you: ['아이스 라떼 한 잔 주세요.', 6, 'Can I get an iced latte?']},
+    {b: ['Sure. For here or to go?', '네. 드시고 가세요, 가져가세요?'], you: ['가져가고 싶어요.', 16, "I'd like to take it to go."]},
+    {b: ['Anything else?', '더 필요한 거 있으세요?'], you: ['빨대 좀 주실 수 있어요?', 7, 'Can you give me a straw?']}
+  ], end: ['Here you go. Have a nice day!', '여기 있습니다. 좋은 하루 보내세요!']},
+  {id: 'late', emoji: '⏰', title: '약속에 늦었을 때', turns: [
+    {b: ['Hey, where are you? The movie starts in 10 minutes!', '야, 어디야? 영화 10분 뒤에 시작해!'], you: ['미안, 막 나가려던 참이었어.', 2, 'Sorry, I was about to leave.']},
+    {b: ['Seriously? We said seven o\'clock.', '진짜? 우리 7시라고 했잖아.'], you: ['늦으려던 건 아니었어.', 26, "I didn't mean to be late."]},
+    {b: ['Okay... how long will it take?', '알았어… 얼마나 걸려?'], you: ['도착하면 알려줄게.', 25, "I'll let you know when I get there."]}
+  ], end: ['Fine. Just hurry up!', '알았어. 빨리 와!']},
+  {id: 'health', emoji: '🏃', title: '요즘 근황 이야기', turns: [
+    {b: ['You look great these days! What\'s your secret?', '요즘 좋아 보인다! 비결이 뭐야?'], you: ['건강해지려고 노력 중이야.', 0, "I'm trying to be healthy."]},
+    {b: ['Nice! What are you doing?', '좋다! 뭐 하고 있는데?'], you: ['매일 아침 걷고 있어.', 4, "I've been walking every morning."]},
+    {b: ['I want to start too, but I\'m always tired.', '나도 시작하고 싶은데 맨날 피곤해.'], you: ['일찍 자는 게 좋을 것 같아.', 11, 'I think you should go to bed early.']},
+    {b: ['Maybe I should drink more coffee?', '커피를 더 마셔야 하나?'], you: ['커피는 줄이는 게 좋을 거야.', 23, 'You might want to drink less coffee.']}
+  ], end: ['Haha, okay. I\'ll try!', '하하, 알았어. 해볼게!']},
+  {id: 'weekend', emoji: '🌧', title: '주말 계획 세우기', turns: [
+    {b: ['Do you want to go hiking this Saturday?', '이번 토요일에 등산 갈래?'], you: ['날씨에 따라 달라.', 24, 'It depends on the weather.']},
+    {b: ['Hmm, look at the sky.', '음, 하늘 좀 봐.'], you: ['비 올 것 같네.', 13, "It looks like it's going to rain."]},
+    {b: ['Then how about a movie instead?', '그럼 대신 영화 볼까?'], you: ['좋은 생각이다!', 14, 'It sounds like a plan!']},
+    {b: ['Is the new Marvel movie any good?', '새로 나온 마블 영화 괜찮아?'], you: ['내가 알기로는 평이 좋아.', 21, 'As far as I know, it has good reviews.']},
+    {b: ['Great, I\'ll book the tickets.', '좋아, 내가 표 예매할게.'], you: ['빨리 보고 싶다!', 27, "I can't wait to see it!"]}
+  ], end: ['Me too! See you Saturday.', '나도! 토요일에 봐.']},
+  {id: 'office', emoji: '💼', title: '회사에서 부탁하기', turns: [
+    {b: ['Hey, you look busy. What\'s up?', '바빠 보이네. 무슨 일이야?'], you: ['혹시 이 보고서 좀 도와줄 수 있나 해서요.', 19, 'I was wondering if you could help me with this report.']},
+    {b: ['Sure. What do you need?', '그럼요. 뭐가 필요해요?'], you: ['이 숫자들 좀 확인해 줬으면 해요.', 17, 'I need you to check these numbers.']},
+    {b: ['No problem. When do you need it?', '문제없어요. 언제까지 필요해요?'], you: ['오늘까지 끝내 주셔도 괜찮을까요?', 8, 'Do you mind finishing it by today?']},
+    {b: ['Not at all. Want to grab lunch after?', '전혀요. 끝나고 점심 먹을래요?'], you: ['미안해요, 1시에 고객을 만나기로 되어 있어요.', 1, "Sorry, I'm supposed to meet a client at one."]},
+    {b: ['No worries. Maybe next time.', '괜찮아요. 다음에 먹어요.'], you: ['그냥 고맙다고 말하고 싶었어요.', 18, 'I just wanted to say thank you.']}
+  ], end: ['Anytime!', '언제든지요!']},
+  {id: 'travel', emoji: '🗺', title: '여행지에서 길 묻기', turns: [
+    {b: ['Are you lost? Can I help you?', '길 잃으셨어요? 도와드릴까요?'], you: ['박물관 보러 왔어요.', 3, "I'm here to see the museum."]},
+    {b: ['Oh, it might be closed on Mondays.', '아, 월요일엔 문을 닫을 수도 있어요.'], you: ['오늘 문을 여는지 잘 모르겠네요.', 9, "I'm not sure if it's open today."]},
+    {b: ['You can check on their website.', '홈페이지에서 확인해 보세요.'], you: ['이 근처에 카페가 있나요?', 15, 'Is there a cafe near here?']}
+  ], end: ['Yes, there\'s one around the corner.', '네, 모퉁이 돌면 하나 있어요.']},
+  {id: 'misunderstand', emoji: '🤝', title: '친구와 오해 풀기', turns: [
+    {b: ['Are you mad at me? You didn\'t answer my text.', '나한테 화났어? 문자 답을 안 했잖아.'], you: ['사실은 오늘 정말 바빴어.', 20, 'The thing is, I was really busy today.']},
+    {b: ['Oh, I thought you were ignoring me.', '아, 나 무시하는 줄 알았어.'], you: ['그래서 답장을 못 한 거야.', 28, "That's why I didn't reply."]},
+    {b: ['I\'m sorry. I should have asked first.', '미안해. 먼저 물어봤어야 했는데.'], you: ['사과할 필요 없어.', 22, "You don't have to apologize."]},
+    {b: ['So we just need to talk more?', '그러니까 우리 대화를 더 해야 한다는 거지?'], you: ['그러니까, 그게 내 말이야!', 29, "That's what I mean!"]}
+  ], end: ['Okay, deal!', '좋아, 그렇게 하자!']},
+  {id: 'house', emoji: '🏠', title: '친구 집들이', turns: [
+    {b: ['Welcome! Come on in.', '어서 와! 들어와.'], you: ['와, 집 같은 느낌이다.', 12, 'Wow, it feels like home.']},
+    {b: ['Thanks! Do you want something to drink?', '고마워! 뭐 마실래?'], you: ['괜찮아, 내가 가져올게.', 5, "It's okay, let me get it."]},
+    {b: ['By the way, how\'s your new job?', '그런데 새 직장은 어때?'], you: ['아직 익숙하지 않은 것 같아.', 10, "I don't think I'm used to it yet."]}
+  ], end: ['Give it some time. You\'ll be fine!', '시간이 좀 필요할 거야. 잘할 거야!']}
+];

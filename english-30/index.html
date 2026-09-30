@@ -254,6 +254,47 @@ nav button.on{color:var(--accent)}
 .dmore .pill{margin-top:8px}
 .dnote{margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.6}
 .dnote li{margin-left:16px}
+/* 대화 연습 */
+.clist{display:grid;gap:8px;margin-top:12px}
+.ccard{display:flex;align-items:center;gap:12px;padding:14px;text-align:left;width:100%}
+.ccard .em{font-size:28px;flex:none}
+.ccard b{display:block;font-size:15.5px;font-weight:800}
+.ccard small{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+.ccard .best{margin-left:auto;flex:none;font-size:12px;font-weight:800;color:var(--ok)}
+.chead{display:flex;align-items:center;gap:10px;margin-top:4px}
+.chead button{width:36px;height:36px;border-radius:50%;background:var(--surface2);font-size:17px;flex:none}
+.chead b{font-size:16px;font-weight:800;flex:1}
+.chead span{font-size:12px;color:var(--muted);font-weight:700}
+.msgs{display:flex;flex-direction:column;gap:10px;padding:14px 0 190px}
+.bub{max-width:82%;padding:10px 13px;border-radius:18px;font-size:15.5px;line-height:1.4;word-break:keep-all}
+.bub small{display:block;font-size:12.5px;margin-top:4px;opacity:.75}
+.bub.b{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:6px;cursor:pointer}
+.bub.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:6px}
+.fb{align-self:stretch;padding:10px 12px;border-radius:12px;font-size:13.5px;line-height:1.5}
+.fb.ok{background:var(--ok-soft)}
+.fb.no{background:var(--warn-soft)}
+.fb b{font-weight:800}
+.fb .model{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:15px;font-weight:700}
+.fb .model button{flex:none;width:28px;height:28px;border-radius:50%;background:var(--surface);font-size:13px}
+.csys{align-self:center;text-align:center;padding:14px;font-size:14px}
+.csys b{display:block;font-size:22px;margin-bottom:4px}
+.csys button{margin:8px 4px 0;padding:10px 16px;border-radius:11px;background:var(--accent);color:#fff;font-weight:700}
+.csys button.ghost{background:var(--surface2);color:var(--text)}
+.composer{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:25;background:var(--bg);border-top:1px solid var(--line);padding:10px 0}
+.cprompt{font-size:13.5px;margin-bottom:8px;line-height:1.45}
+.cprompt .say{font-size:15px;font-weight:800}
+.cprompt .pt{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700}
+.cprompt .peek{float:right;font-size:12.5px;color:var(--muted);text-decoration:underline}
+.cacts{display:flex;gap:6px;margin-bottom:8px}
+.cacts button{flex:1;padding:10px 4px;border-radius:11px;background:var(--surface2);font-size:13.5px;font-weight:700}
+.cacts button.pri{background:var(--accent);color:#fff}
+.cin{display:flex;gap:8px;align-items:center}
+.cin input{flex:1;min-width:0;padding:12px 14px;border-radius:22px;border:1px solid var(--line);background:var(--surface);font-size:15.5px}
+.cin button{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:20px}
+.mic{background:var(--accent);color:#fff}
+.mic.on{background:#e5484d;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.send{background:var(--surface2)}
 #toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#222433;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:90%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #installBanner{display:none;margin-top:12px;padding:12px 14px;align-items:center;gap:10px;font-size:13px}
@@ -341,6 +382,8 @@ nav button.on{color:var(--accent)}
   </section>
 
   <!-- ─────────── 퀴즈 ─────────── -->
+  <section class="view" id="view-chat"><div id="chatRoot"></div></section>
+
   <section class="view" id="view-notes">
     <div id="notesTop"></div>
     <div class="chips" id="noteFilter" style="margin-top:14px"></div>
@@ -363,6 +406,7 @@ nav button.on{color:var(--accent)}
   <div class="wrap">
     <button data-view="listen" class="on"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h2v-8H5v-1a7 7 0 0 1 14 0v1h-2v8h2a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9z"/></svg>듣기</button>
     <button data-view="learn"><svg viewBox="0 0 24 24"><path d="M4 5h16v2H4zm0 6h16v2H4zm0 6h10v2H4z"/></svg>패턴</button>
+    <button data-view="chat"><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 5v2h2V9zm4 0v2h2V9zm4 0v2h2V9z"/></svg>대화</button>
     <button data-view="notes"><svg viewBox="0 0 24 24"><path d="M5 3h11l4 4v14H5zm2 2v14h11V8h-3V5zm2 5h7v2H9zm0 4h7v2H9z"/></svg>노트<span class="badge" id="noteBadge"></span></button>
     <button data-view="quiz"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2zm2.1-7.7-.9.9A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.2-2.8l1.2-1.3A2 2 0 1 0 10 9H8a4 4 0 1 1 7.1 2.3z"/></svg>퀴즈</button>
   </div>
@@ -411,7 +455,7 @@ const patternsOfDay = d => Array.from({length: PER_DAY}, (_, i) => (d - 1) * PER
 /* ───────────── 저장 ───────────── */
 const KEY = 'english30:v1';
 const DEFAULT_SETTINGS = { mode: 'speak', rate: 0.9, think: 3, repeat: 2, shuffle: false, mine: true, ko: true, fun: true, voice: '', loop: false, scope: 'd1', resume: null };
-let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, notes: [], settings: {}, savedAt: 0, backupAt: 0 };
+let store = { mastered: {}, mine: {}, dayDone: {}, quiz: {}, notes: [], chats: {}, settings: {}, savedAt: 0, backupAt: 0 };
 let storageOK = true;
 try {
   Object.assign(store, JSON.parse(localStorage.getItem(KEY)) || {});
@@ -1008,7 +1052,7 @@ function renderNotes() {
   $('#noteFilter').querySelectorAll('.chip').forEach(b => b.onclick = () => { noteFilter = b.dataset.k; renderNotes(); });
 
   const list = store.notes.filter(n => noteFilter === 'done' ? n.done : !n.done && (noteFilter === 'all' || (noteFilter === 'untyped' ? !n.types.length : n.types.includes(noteFilter))));
-  const src = {listen: '듣기', quiz: '퀴즈', manual: '직접', note: '노트'};
+  const src = {listen: '듣기', quiz: '퀴즈', manual: '직접', note: '노트', chat: '대화'};
   $('#noteList').innerHTML = list.length ? list.map(n => `<div class="card nitem${n.done ? ' done' : ''}" data-id="${n.id}">
     <div class="en">${n.en ? esc(n.en) : '<span style="color:var(--muted)">영어 표현 미입력</span>'}</div>
     ${n.ko ? `<div class="ko">${esc(n.ko)}</div>` : ''}
@@ -1040,12 +1084,142 @@ $('#nAdd').onclick = () => {
   $('#nKo').value = ''; $('#nEn').value = ''; noteFilter = 'all'; renderNotes(); toast('기록했어요 — 유형도 체크해 보세요');
 };
 
+/* ───────────── 대화 연습 ───────────── */
+// 패턴별로 "썼다"고 볼 핵심 구절 (축약형은 풀어서 비교)
+const PKEYS = {0: ['am trying to', 'am trying'], 1: ['supposed to'], 2: ['about to'], 3: ['here to'], 4: ['have been'], 5: ['let me'],
+  6: ['can i get', 'could i get'], 7: ['can you', 'could you'], 8: ['do you mind', 'would you mind'], 9: ['not sure if', 'not sure whether'],
+  10: ['do not think'], 11: ['you should'], 12: ['feels like'], 13: ['looks like'], 14: ['sounds like'],
+  15: ['there is', 'there are', 'is there', 'are there'], 16: ['would like to'], 17: ['need you to'], 18: ['just wanted to', 'just want to'],
+  19: ['wondering if'], 20: ['thing is'], 21: ['as far as i know'], 22: ['do not have to'], 23: ['might want to'], 24: ['depends on'],
+  25: ['let you know'], 26: ['did not mean to'], 27: ['can not wait to'], 28: ['that is why'], 29: ['what i mean']};
+function normEn(t) {
+  t = ' ' + String(t).toLowerCase().replace(/[’‘`´]/g, "'") + ' ';
+  t = t.replace(/\blet's\b/g, 'let us').replace(/\bcan't\b|\bcannot\b/g, 'can not').replace(/\bwon't\b/g, 'will not')
+    .replace(/n't\b/g, ' not').replace(/\bi'm\b/g, 'i am').replace(/'ve\b/g, ' have').replace(/'d\b/g, ' would')
+    .replace(/'ll\b/g, ' will').replace(/'re\b/g, ' are').replace(/\b(it|that|there|what|he|she|who|here)'s\b/g, '$1 is')
+    .replace(/\bwanna\b/g, 'want to').replace(/\bgonna\b/g, 'going to')
+    // 휴대폰 입력에서 흔한 아포스트로피 생략형 (im, didnt, cant …)
+    .replace(/\bim\b/g, 'i am').replace(/\bive\b/g, 'i have').replace(/\bid\b/g, 'i would').replace(/\bcant\b/g, 'can not')
+    .replace(/\bwont\b/g, 'will not').replace(/\b(do|did|does|is|are|was|were|could|should|would|have|has)nt\b/g, '$1 not')
+    .replace(/\b(that|there|what|it)s\b/g, '$1 is').replace(/\byoure\b/g, 'you are');
+  return ' ' + t.replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+}
+const usedPattern = (text, p) => PKEYS[p].some(k => normEn(text).includes(' ' + k + ' '));
+
+const chat = {d: null, i: 0, log: [], ok: new Set(), wait: null, done: false};
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+
+function startChat(id) {
+  const d = DIALOGS.find(x => x.id === id);
+  Object.assign(chat, {d, i: 0, log: [], ok: new Set(), wait: null, done: false});
+  if (player.playing) player.pause();
+  partnerSays(d.turns[0].b);
+}
+function partnerSays([en, ko]) {
+  chat.log.push({w: 'b', en, ko});
+  renderChat();
+  speakNow(en, 'en');
+}
+function turn() { return chat.d.turns[chat.i]; }
+function submitAnswer(text) {
+  text = (text || '').trim();
+  if (!text || !chat.d || chat.done) return;
+  const [, p, model] = turn().you;
+  const ok = usedPattern(text, p);
+  chat.log.push({w: 'me', text});
+  chat.log.push({w: 'fb', ok, p, model});
+  if (ok) { chat.ok.add(chat.i); chat.wait = null; renderChat(); setTimeout(nextTurn, 1500); }
+  else { chat.wait = 'miss'; renderChat(); speakNow(model, 'en'); }
+}
+function peekAnswer() {
+  const [ko, p, model] = turn().you;
+  chat.log.push({w: 'fb', ok: false, p, model, peek: true});
+  chat.wait = 'miss';
+  addNote({en: model, ko, p, src: 'chat'}, true);
+  renderChat(); speakNow(model, 'en');
+  toast('막힘 노트에도 기록했어요');
+}
+function nextTurn() {
+  if (!chat.d || chat.done) return;
+  chat.wait = null; chat.i++;
+  if (chat.i < chat.d.turns.length) return partnerSays(turn().b);
+  chat.done = true;
+  const n = chat.ok.size, total = chat.d.turns.length;
+  store.chats[chat.d.id] = Math.max(store.chats[chat.d.id] || 0, n); save();
+  chat.log.push({w: 'b', en: chat.d.end[0], ko: chat.d.end[1]});
+  chat.log.push({w: 'end', n, total});
+  renderChat(); speakNow(chat.d.end[0], 'en');
+}
+function listen() {
+  if (!SR) return;
+  if (listening) { rec && rec.stop(); return; }
+  if (synth) synth.cancel();
+  rec = new SR(); rec.lang = 'en-US'; rec.interimResults = true; rec.maxAlternatives = 1;
+  const inp = $('#cText');
+  rec.onresult = e => {
+    const r = e.results[e.results.length - 1];
+    inp.value = Array.from(e.results).map(x => x[0].transcript).join(' ');
+    if (r.isFinal) { const t = inp.value; inp.value = ''; rec.stop(); submitAnswer(t); }
+  };
+  rec.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('마이크 권한을 허용해 주세요'); else if (e.error !== 'aborted' && e.error !== 'no-speech') toast('잘 못 들었어요. 다시 눌러 말해 주세요'); };
+  rec.onend = () => { listening = false; const m = $('#cMic'); if (m) m.classList.remove('on'); };
+  try { rec.start(); listening = true; $('#cMic').classList.add('on'); } catch (e) { listening = false; }
+}
+function renderChat() {
+  const root = $('#chatRoot');
+  if (!chat.d) {
+    root.innerHTML = `<div class="hint">상대가 먼저 말을 걸어요. 알려주는 말을 <b>배운 패턴</b>으로 🎤 말하거나 입력해서 답하세요.</div>
+      <div class="clist">${DIALOGS.map(d => {
+        const best = store.chats[d.id];
+        return `<button class="card ccard" data-id="${d.id}"><span class="em">${d.emoji}</span><span><b>${esc(d.title)}</b><small>${d.turns.map(t => esc(PATTERNS[t.you[1]].en)).join(' · ')}</small></span>${best != null ? `<span class="best">${best === d.turns.length ? '✓ 완벽' : `${best}/${d.turns.length}`}</span>` : ''}</button>`;
+      }).join('')}</div>`;
+    root.querySelectorAll('.ccard').forEach(b => b.onclick = () => startChat(b.dataset.id));
+    return;
+  }
+  const d = chat.d, fbHtml = m => {
+    const pn = esc(PATTERNS[m.p].en);
+    const head = m.ok ? `✅ <b>${pn}</b> 패턴 성공!` : m.peek ? `💡 이렇게 말하면 돼요 (<b>${pn}</b>)` : `💡 <b>${pn}</b> 패턴을 넣어서 다시 말해볼까요?`;
+    return `<div class="fb ${m.ok ? 'ok' : 'no'}">${head}<div class="model"><button data-say="${esc(m.model)}">🔊</button>${esc(m.model)}</div></div>`;
+  };
+  const msgs = chat.log.map(m => m.w === 'b' ? `<div class="bub b" data-say="${esc(m.en)}">${esc(m.en)}<small>${esc(m.ko)}</small></div>`
+    : m.w === 'me' ? `<div class="bub me">${esc(m.text)}</div>`
+    : m.w === 'fb' ? fbHtml(m)
+    : `<div class="card csys"><b>${m.n === m.total ? '🎉' : '👏'} ${m.n}/${m.total}</b>${m.n === m.total ? '모든 차례에서 패턴을 썼어요!' : '패턴을 쓴 차례 수예요. 한 번 더 해볼까요?'}<br><button id="cAgain">다시 하기</button><button class="ghost" id="cList">다른 대화</button></div>`).join('');
+  let bottom = '';
+  if (!chat.done) {
+    const [ko, p] = turn().you;
+    const prompt = chat.wait === 'miss'
+      ? `<div class="cacts"><button class="pri" id="cRetry">🔁 다시 말하기</button><button id="cNext">다음 ▶</button></div>`
+      : `<div class="cprompt"><button class="peek" id="cPeek">정답 보기</button>🗣 이렇게 말해보세요<div class="say">"${esc(ko)}"</div><span class="pt">패턴: ${esc(PATTERNS[p].en)}</span></div>`;
+    bottom = `<div class="composer"><div class="wrap">${prompt}
+      <form class="cin" id="cForm">${SR ? '<button type="button" class="mic" id="cMic" aria-label="말하기">🎤</button>' : ''}<input id="cText" placeholder="${SR ? '🎤 누르고 말하거나 입력' : '영어로 입력 (키보드 🎤 받아쓰기도 돼요)'}" autocomplete="off" autocapitalize="sentences" enterkeyhint="send"><button class="send" aria-label="보내기">➤</button></form>
+    </div></div>`;
+  }
+  root.innerHTML = `<div class="chead"><button id="cBack" aria-label="목록">←</button><b>${d.emoji} ${esc(d.title)}</b><span>${Math.min(chat.i + 1, d.turns.length)}/${d.turns.length}</span></div>
+    <div class="msgs">${msgs}</div>${bottom}`;
+  $('#cBack').onclick = () => { if (rec) rec.abort(); chat.d = null; renderChat(); };
+  root.querySelectorAll('[data-say]').forEach(el => el.onclick = () => speakNow(el.dataset.say, 'en'));
+  if (!chat.done) {
+    $('#cForm').onsubmit = e => { e.preventDefault(); const v = $('#cText').value; $('#cText').value = ''; submitAnswer(v); };
+    if ($('#cMic')) $('#cMic').onclick = listen;
+    if ($('#cPeek')) $('#cPeek').onclick = peekAnswer;
+    if ($('#cRetry')) $('#cRetry').onclick = () => { chat.wait = null; renderChat(); if (SR) listen(); else $('#cText').focus(); };
+    if ($('#cNext')) $('#cNext').onclick = nextTurn;
+  } else {
+    $('#cAgain').onclick = () => startChat(d.id);
+    $('#cList').onclick = () => { chat.d = null; renderChat(); };
+  }
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
 /* ───────────── 탭 ───────────── */
 function showView(v) {
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('active', x.id === 'view-' + v));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
   if (v === 'learn') renderLearn();
   if (v === 'notes') renderNotes();
+  if (v === 'chat') renderChat();
   if (v === 'quiz' && !quiz.items.length) startQuiz(S.scope[0] === 'p' ? 'd' + dayOf(+S.scope.slice(1)) : S.scope);
   window.scrollTo(0, 0);
 }
@@ -1148,6 +1322,7 @@ function mergeStore(d) {
     if (!ex.en && n.en) ex.en = n.en; if (!ex.ko && n.ko) ex.ko = n.ko;
     if (n.ts > ex.ts) { ex.ts = n.ts; ex.done = !!n.done; }
   });
+  Object.entries(d.chats || {}).forEach(([k, v]) => { store.chats[k] = Math.max(store.chats[k] || 0, v || 0); });
   store.notes.sort((a, b) => b.ts - a.ts);
   return add;
 }
@@ -1157,6 +1332,7 @@ function refreshAll() {
   renderChips($('#scopeChips'), S.scope, setScope, true);
   if ($('#view-learn').classList.contains('active')) renderLearn();
   if ($('#view-notes').classList.contains('active')) renderNotes();
+  if ($('#view-chat').classList.contains('active') && !chat.d) renderChat();
   if ($('#dataSheet').classList.contains('show')) renderDataSheet();
 }
 function importBackup(text) {
