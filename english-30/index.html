@@ -228,6 +228,23 @@ nav button.on{color:var(--accent)}
 .dgrid b{display:block;font-size:19px;color:var(--text)}
 .dbk{margin-top:12px;font-size:13px}
 .dbk.warn{color:var(--warn);font-weight:700}
+.sync{margin-top:12px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.sync.on{border-color:var(--accent)}
+.sync b{font-size:15px}
+.sync p{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
+.sync p b{font-size:13px;color:var(--text)}
+.sbtn{width:100%;margin-top:12px;padding:13px;border-radius:12px;background:var(--accent);color:#fff;font-weight:800;font-size:15px}
+.sjoin{display:flex;gap:6px;margin-top:10px}
+.sjoin input{flex:1;min-width:0;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);font-size:14px;letter-spacing:1px;text-transform:uppercase}
+.sjoin button{padding:0 16px;border-radius:10px;background:var(--surface2);font-weight:700}
+.scode{margin-top:10px;padding:12px;border-radius:10px;background:var(--surface2);font:700 17px/1.3 ui-monospace,Menlo,monospace;letter-spacing:1px;text-align:center;word-break:break-all;user-select:all;-webkit-user-select:all}
+.sstat{margin-top:10px;font-size:13px;font-weight:700;color:var(--ok)}
+.sstat.syncing{color:var(--muted)}
+.sstat.offline,.sstat.error{color:var(--warn)}
+.srow{display:flex;gap:6px;margin-top:10px}
+.srow button{flex:1;padding:10px 4px;border-radius:10px;background:var(--surface2);font-size:13px;font-weight:700}
+.soff{margin-top:10px;font-size:12px;color:var(--muted);text-decoration:underline}
+.hbtn.pending .dot{display:block}
 .dbtns{display:flex;gap:8px;margin-top:12px}
 .dbtns button{flex:1;padding:13px 8px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;font-size:14px}
 .dbtns button.ghost{background:var(--surface2);color:var(--text)}
@@ -360,7 +377,10 @@ nav button.on{color:var(--accent)}
 <div class="sheet" id="dataSheet">
   <div class="card sheet-body">
     <div class="sheet-head"><span>💾 내 데이터</span><button id="dataClose" aria-label="닫기">✕</button></div>
+    <div id="syncBox"></div>
     <div id="dataInfo"></div>
+    <details class="dmore" id="manualBackup">
+    <summary>📁 파일로 직접 백업하기 (선택)</summary>
     <div class="dbtns"><button id="dExport">📤 백업 파일 저장</button><button class="ghost" id="dImport">📥 백업 불러오기</button></div>
     <input type="file" id="dFile" accept=".json,application/json,text/plain" hidden>
     <details class="dmore">
@@ -369,11 +389,11 @@ nav button.on{color:var(--accent)}
       <textarea id="dPaste" placeholder="복사해 둔 백업 텍스트를 여기에 붙여넣기"></textarea>
       <button class="pill" id="dPasteGo">붙여넣은 내용으로 불러오기</button>
     </details>
+    </details>
     <ul class="dnote">
-      <li>기록은 누를 때마다 이 기기에 <b>자동 저장</b>돼요.</li>
-      <li>아이폰은 <b>홈 화면 앱과 브라우저(사파리·크롬)의 저장 공간이 따로</b>예요. 한쪽에서 백업 파일 저장 → 다른 쪽에서 불러오기로 옮기세요.</li>
-      <li>불러오기는 지금 기록에 <b>합쳐져요</b> (지워지지 않아요). 폰을 바꿀 때도 같은 방법으로 옮기면 돼요.</li>
-      <li>브라우저에서 오래 안 쓰면 기록이 지워질 수 있어요. 홈 화면 앱으로 쓰고, 가끔 백업해 두면 안전해요.</li>
+      <li>기록은 누르는 즉시 이 기기에 저장되고, <b>동기화를 켜면 서버에도 자동 저장</b>돼요. 걷다가 인터넷이 끊겨도 기록되고, 연결되면 올라가요.</li>
+      <li>폰을 바꾸거나 앱을 지웠다면: 새 기기에서 <b>코드 입력 → 연결</b>하면 기록이 돌아와요.</li>
+      <li>아이폰은 홈 화면 앱과 브라우저가 따로라서, 양쪽을 쓴다면 두 곳 모두 같은 코드로 연결하세요.</li>
     </ul>
   </div>
 </div>
@@ -404,6 +424,7 @@ function save() {
   try { localStorage.setItem(KEY, JSON.stringify(store)); storageOK = true; }
   catch (e) { storageOK = false; }
   const w = document.getElementById('saveWarn'); if (w) w.classList.toggle('show', !storageOK);
+  try { if (window.onLocalSave) window.onLocalSave(); } catch (e) {}
   try { updateDataDot(); } catch (e) {}
 }
 
@@ -1041,7 +1062,7 @@ async function askPersist() {
   } catch (e) {}
 }
 const hasData = () => store.notes.length || Object.values(store.mastered).some(Boolean) || Object.keys(store.dayDone).length || Object.values(store.mine).some(a => a.length);
-const needBackup = () => hasData() && Date.now() - (store.backupAt || 0) > 7 * 864e5;
+const needBackup = () => !(window.syncOn && window.syncOn()) && hasData() && Date.now() - (store.backupAt || 0) > 7 * 864e5;
 function ago(t) {
   if (!t) return '없음';
   const m = Math.round((Date.now() - t) / 6e4);
@@ -1060,12 +1081,12 @@ function renderDataSheet() {
   ];
   $('#dataInfo').innerHTML = (storageOK
     ? `<div class="dstat">✅ 이 기기에 자동 저장 중 · 마지막 저장 <b>${ago(store.savedAt)}</b><br>
-       📍 ${isApp() ? '홈 화면 앱' : '브라우저'}에 저장됨${persisted === true ? ' · 🔒 영구 보관 허용됨' : persisted === false ? ' · 오래 안 쓰면 브라우저가 지울 수 있어요' : ''}</div>`
+       📍 ${isApp() ? '홈 화면 앱' : '브라우저'}에 저장됨${window.syncOn && syncOn() ? ' · ☁️ 서버에도 저장 중이라 기기에서 지워져도 복구돼요' : persisted === true ? ' · 🔒 영구 보관 허용됨' : persisted === false ? ' · 오래 안 쓰면 브라우저가 지울 수 있어요' : ''}</div>`
     : `<div class="dstat bad">⚠️ 지금 창에서는 저장이 안 돼요. 사생활 보호(시크릿) 모드나 미리보기 창이면 일반 창·홈 화면 앱에서 열어주세요.</div>`)
     + `<div class="dgrid">${cells.map(([k, v]) => `<div>${k}<b>${v}</b></div>`).join('')}</div>`
-    + `<div class="dbk${needBackup() ? ' warn' : ''}">마지막 백업: ${ago(store.backupAt)}${needBackup() ? ' — 백업해 두는 걸 추천해요' : ''}</div>`;
+    + (window.syncOn && syncOn() ? '' : `<div class="dbk${needBackup() ? ' warn' : ''}">마지막 백업: ${ago(store.backupAt)}${needBackup() ? ' — 동기화를 켜거나 백업해 두는 걸 추천해요' : ''}</div>`);
 }
-function openDataSheet() { renderDataSheet(); $('#dataSheet').classList.add('show'); askPersist().then(() => $('#dataSheet').classList.contains('show') && renderDataSheet()); }
+function openDataSheet() { renderDataSheet(); if (window.renderSync) renderSync(); $('#dataSheet').classList.add('show'); askPersist().then(() => $('#dataSheet').classList.contains('show') && renderDataSheet()); }
 $('#btnData').onclick = openDataSheet;
 $('#dataClose').onclick = () => $('#dataSheet').classList.remove('show');
 $('#dataSheet').addEventListener('click', e => { if (e.target.id === 'dataSheet') e.target.classList.remove('show'); });
@@ -1130,18 +1151,21 @@ function mergeStore(d) {
   store.notes.sort((a, b) => b.ts - a.ts);
   return add;
 }
+function refreshAll() {
+  player.dirty = true;
+  renderMeter(); updateNoteBadge(); updateDataDot(); renderPlan();
+  renderChips($('#scopeChips'), S.scope, setScope, true);
+  if ($('#view-learn').classList.contains('active')) renderLearn();
+  if ($('#view-notes').classList.contains('active')) renderNotes();
+  if ($('#dataSheet').classList.contains('show')) renderDataSheet();
+}
 function importBackup(text) {
   let obj;
   try { obj = JSON.parse(text); } catch (e) { return toast('백업 내용을 읽을 수 없어요'); }
   const d = obj && obj.app === 'english30' ? obj.data : obj;
   if (!d || typeof d !== 'object' || !('mastered' in d || 'notes' in d || 'dayDone' in d)) return toast('영어30 백업이 아니에요');
   const add = mergeStore(d);
-  save(); player.dirty = true;
-  renderMeter(); updateNoteBadge(); updateDataDot(); renderPlan();
-  renderChips($('#scopeChips'), S.scope, setScope, true);
-  if ($('#view-learn').classList.contains('active')) renderLearn();
-  if ($('#view-notes').classList.contains('active')) renderNotes();
-  renderDataSheet();
+  save(); refreshAll();
   const parts = [add.notes && `노트 ${add.notes}`, add.mastered && `자동화 ${add.mastered}`, add.mine && `내 문장 ${add.mine}`, add.days && `Day ${add.days}`].filter(Boolean);
   toast(parts.length ? `불러오기 완료: ${parts.join(', ')} 추가` : '불러오기 완료 (새로 추가된 기록은 없어요)');
 }
@@ -1173,5 +1197,7 @@ if (resumeAt && resumeAt.scope === S.scope && player.queue.length) {
 }
 if (!synth) toast('이 브라우저는 음성 재생을 지원하지 않아요');
 </script>
+<script src="sync-config.js"></script>
+<script src="sync.js"></script>
 </body>
 </html>

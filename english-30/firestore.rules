@@ -1,0 +1,16 @@
+rules_version = '2';
+// 영어 30 패턴 동기화 규칙: Firebase 콘솔 → Firestore Database → 규칙 탭에 그대로 붙여넣기
+// - 문서 ID(동기화 코드)는 20자 무작위 → 코드를 모르면 읽거나 쓸 수 없음
+// - 목록 조회 금지, 정해진 형태의 데이터만 저장 허용
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /sync/{code} {
+      allow get: if code.size() == 20;
+      allow create, update: if code.size() == 20
+        && request.resource.data.keys().hasOnly(['json', 'updatedAt', 'device'])
+        && request.resource.data.json is string
+        && request.resource.data.json.size() < 900000
+        && request.resource.data.updatedAt is int;
+    }
+  }
+}
